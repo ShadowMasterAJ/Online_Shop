@@ -5,21 +5,47 @@ class ProductItem extends StatelessWidget {
   ProductItem(this.id, this.imageURL, this.title);
   @override
   Widget build(BuildContext context) {
-    return GridTile(
-      child: Image.network(
-        imageURL,
-        fit: BoxFit.cover,
-      ),
-      footer: GridTileBar(
-        backgroundColor: Colors.black54,
-        title: Text(title),
-        leading: IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.favorite),
-        ),
-        trailing: IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.shopping_cart),
+    return Container(
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(20)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: GridTile(
+          child: Image.network(
+            imageURL,
+            fit: BoxFit.cover,
+          ),
+          footer: GridTileBar(
+            backgroundColor: Colors.black87,
+            leading: IconButton(
+              iconSize: 20,
+              padding: EdgeInsets.all(1),
+              onPressed: () {},
+              icon: Icon(
+                Icons.favorite,
+                color: Theme.of(context).accentColor,
+              ),
+            ),
+            title: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                title,
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+                softWrap: true,
+              ),
+            ),
+            trailing: IconButton(
+              iconSize: 20,
+              padding: EdgeInsets.all(0),
+              onPressed: () {},
+              icon: Icon(
+                Icons.shopping_cart,
+                color: Theme.of(context).accentColor,
+              ),
+            ),
+          ),
         ),
       ),
     );

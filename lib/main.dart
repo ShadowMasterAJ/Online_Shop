@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import './screens/product_overview_screen.dart';
 import './providers/products.dart';
+import './screens/product_detail_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,6 +19,9 @@ class MyApp extends StatelessWidget {
             accentColor: Colors.amber,
             fontFamily: 'Lato'),
         home: ProductOverviewScreen(),
+        routes: {
+          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+        },
       ),
     );
   }

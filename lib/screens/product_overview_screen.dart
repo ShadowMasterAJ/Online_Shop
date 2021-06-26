@@ -3,7 +3,10 @@ import 'package:provider/provider.dart';
 
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
+import '../widgets/app_drawer.dart';
+
 import '../providers/cart.dart';
+
 import '../screens/cart_screen.dart';
 
 enum FilterOptions { Favorites, All }
@@ -21,6 +24,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
 
     return Scaffold(
         appBar: AppBar(
+          iconTheme: Theme.of(context).primaryIconTheme,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -30,6 +34,25 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
           ),
           backgroundColor: Colors.grey[900],
           actions: [
+            Consumer<Cart>(
+              builder: (_, cart, child) => cart.itemCount > 0
+                  ? Badge(
+                      child: child,
+                      value: cart.itemCount.toString(),
+                    )
+                  : child,
+              child: IconButton(
+                icon: Icon(
+                  cart.itemCount > 0
+                      ? Icons.shopping_cart
+                      : Icons.shopping_cart_outlined,
+                  color: Theme.of(context).accentColor,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(CartScreen.routeName);
+                },
+              ),
+            ),
             PopupMenuButton(
               onSelected: (FilterOptions selection) {
                 setState(() {
@@ -55,27 +78,9 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
                 )
               ],
             ),
-            Consumer<Cart>(
-              builder: (_, cart, child) => cart.itemCount > 0
-                  ? Badge(
-                      child: child,
-                      value: cart.itemCount.toString(),
-                    )
-                  : child,
-              child: IconButton(
-                icon: Icon(
-                  cart.itemCount > 0
-                      ? Icons.shopping_cart
-                      : Icons.shopping_cart_outlined,
-                  color: Theme.of(context).accentColor,
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(CartScreen.routeName);
-                },
-              ),
-            ),
           ],
         ),
+        drawer: AppDrawer(),
         body: ProductsGrid(_showFavorites));
   }
 }

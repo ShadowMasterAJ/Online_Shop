@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart.dart' show Cart;
 import '../widgets/cart_item.dart';
+import '../providers/orders.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = '/cart';
@@ -11,6 +12,9 @@ class CartScreen extends StatelessWidget {
     final cart = Provider.of<Cart>(context);
     return Scaffold(
       appBar: AppBar(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         iconTheme: IconThemeData(
           color: Colors.deepOrange, //change your color here
         ),
@@ -25,17 +29,19 @@ class CartScreen extends StatelessWidget {
           SizedBox(
             height: 5,
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: cart.itemCount,
-              itemBuilder: (ctx, i) => CartItem(
-                id: cart.items.values.toList()[i].id,
-                price: cart.items.values.toList()[i].price,
-                quantity: cart.items.values.toList()[i].quantity,
-                title: cart.items.values.toList()[i].title,
-              ),
-            ),
-          ),
+          cart.itemCount > 0
+              ? Expanded(
+                  child: ListView.builder(
+                    itemCount: cart.itemCount,
+                    itemBuilder: (ctx, i) => CartItem(
+                      id: cart.items.values.toList()[i].id,
+                      price: cart.items.values.toList()[i].price,
+                      quantity: cart.items.values.toList()[i].quantity,
+                      title: cart.items.values.toList()[i].title,
+                    ),
+                  ),
+                )
+              : Container(),
           Card(
             elevation: 10,
             color: Colors.grey[200],
@@ -82,13 +88,25 @@ class CartScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.deepOrange, width: 2),
               ),
-              child: TextButton(
-                onPressed: () {},
-                child: Text(
-                  'ORDER NOW',
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-              ),
+              child: cart.itemCount > 0
+                  ? TextButton(
+                      onPressed: () {
+                        Provider.of<Orders>(context, listen: false).addOrder(
+                          cart.items.values.toList(),
+                          cart.totalAmount,
+                        );
+                        cart.clearItems();
+                        Navigator.of(context).pushReplacementNamed('/');
+                      },
+                      child: Text(
+                        'ORDER NOW',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                    )
+                  : Text(
+                      'Add Items to Cart to place an Order',
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
             ),
           ]),
         ],

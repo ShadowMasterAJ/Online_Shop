@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 class CartItem {
   final String id, title;
-  final int quantity;
+  int quantity;
   final double price;
 
   CartItem({
@@ -59,5 +59,28 @@ class Cart with ChangeNotifier {
               quantity: 1));
       notifyListeners();
     }
+  }
+
+  void removeItem(String productId) {
+    _items.remove(productId);
+    notifyListeners();
+  }
+
+  void subtractQuantity(String productId) {
+    _items[productId].quantity--;
+    if (_items[productId].quantity <= 0) {
+      removeItem(productId);
+    }
+    notifyListeners();
+  }
+
+  void addQuantity(String productId) {
+    _items[productId].quantity++;
+    notifyListeners();
+  }
+
+  void clearItems() {
+    _items = {};
+    notifyListeners();
   }
 }

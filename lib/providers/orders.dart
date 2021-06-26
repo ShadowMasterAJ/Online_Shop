@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/cart_item.dart';
+// import '../widgets/cart_item.dart';
 import '../providers/cart.dart';
+
 class OrderItem {
   final String id;
   final double amount;
@@ -15,14 +16,14 @@ class OrderItem {
   });
 }
 
-class Order with ChangeNotifier {
-  List<OrderItem> _order = [];
+class Orders with ChangeNotifier {
+  List<OrderItem> _orders = [];
   List<OrderItem> get orders {
-    return [..._order];
+    return [..._orders];
   }
 
   void addOrder(List<CartItem> cartItems, double total) {
-    _order.insert(
+    _orders.insert(
       0,
       OrderItem(
         amount: total,
@@ -34,8 +35,5 @@ class Order with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearItems() {
-    _items = [];
-    notifyListeners();
-  }
+  
 }

@@ -59,14 +59,11 @@ class _ProductItemState extends State<ProductItem> {
                       ),
                     ),
                   ),
-                  title: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      product.title,
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center,
-                      softWrap: true,
-                    ),
+                  title: Text(
+                    product.title,
+                    style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center,
+                    softWrap: true,
                   ),
                   trailing: Consumer<Cart>(
                     builder: (_, cart, child) =>
@@ -86,6 +83,20 @@ class _ProductItemState extends State<ProductItem> {
                             product.id,
                             product.title,
                             product.price,
+                          );
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              duration: Duration(seconds: 3),
+                              content:
+                                  Text('Item was successfully added to cart'),
+                              action: SnackBarAction(
+                                label: 'UNDO',
+                                onPressed: () {
+                                  cart.subtractQuantity(product.id);
+                                },
+                              ),
+                            ),
                           );
                         });
                       },

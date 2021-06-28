@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../screens/orders_screen.dart';
+import '../screens/user_products_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -81,6 +82,40 @@ class AppDrawer extends StatelessWidget {
                           width: 20,
                         ),
                         Text('Orders',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5
+                                .copyWith(fontSize: 22)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(UserProductsScreen.routeName);
+                },
+                child: Card(
+                  elevation: 15,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  color: Colors.grey[900],
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.edit,
+                          color: Theme.of(context).accentColor,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text('Manage Products',
                             style: Theme.of(context)
                                 .textTheme
                                 .headline5

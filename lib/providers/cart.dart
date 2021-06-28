@@ -52,30 +52,44 @@ class Cart with ChangeNotifier {
     } else {
       _items.putIfAbsent(
           productID,
-          () => CartItem(
-              id: DateTime.now().toString(),
-              title: title,
-              price: price,
-              quantity: 1));
+          () =>
+              CartItem(id: productID, title: title, price: price, quantity: 1));
       notifyListeners();
     }
   }
 
   void removeItem(String productId) {
+    
     _items.remove(productId);
     notifyListeners();
   }
 
   void subtractQuantity(String productId) {
-    _items[productId].quantity--;
-    if (_items[productId].quantity <= 0) {
+    if (!_items.containsKey(productId)) {
+      return;
+    }
+    if (_items[productId].quantity > 1) {
+      _items.update(
+          productId,
+          (existingItem) => CartItem(
+              id: existingItem.id,
+              price: existingItem.price,
+              title: existingItem.title,
+              quantity: existingItem.quantity - 1));
+    } else {
       removeItem(productId);
     }
     notifyListeners();
   }
 
   void addQuantity(String productId) {
-    _items[productId].quantity++;
+    _items.update(
+        productId,
+        (existingItem) => CartItem(
+            id: existingItem.id,
+            price: existingItem.price,
+            title: existingItem.title,
+            quantity: existingItem.quantity + 1));
     notifyListeners();
   }
 

@@ -46,6 +46,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
                   cart.itemCount > 0
                       ? Icons.shopping_cart
                       : Icons.shopping_cart_outlined,
+                  size: 30,
                   color: Theme.of(context).accentColor,
                 ),
                 onPressed: () {
@@ -53,8 +54,12 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
                 },
               ),
             ),
-            PopupMenuButton(
-              onSelected: (FilterOptions selection) {
+            PopupMenuButton<Object>(
+              color: Colors.black87,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              onSelected: (Object selection) {
                 setState(() {
                   if (selection == FilterOptions.Favorites) {
                     _showFavorites = true;
@@ -65,17 +70,29 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
               },
               icon: Icon(
                 Icons.more_vert_rounded,
+                size: 30,
                 color: Theme.of(context).accentColor,
               ),
-              itemBuilder: (_) => [
+              itemBuilder: (ctx) => <PopupMenuEntry<Object>>[
                 PopupMenuItem(
-                  child: Text('Show Favourites'),
+                  child: Text('Show Favourites',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5
+                          .copyWith(fontSize: 18, fontWeight: FontWeight.w100)),
                   value: FilterOptions.Favorites,
                 ),
+                PopupMenuDivider(
+                    // height: 20,
+                    ),
                 PopupMenuItem(
-                  child: Text('Show All'),
+                  child: Text('Show All',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5
+                          .copyWith(fontSize: 18, fontWeight: FontWeight.w100)),
                   value: FilterOptions.All,
-                )
+                ),
               ],
             ),
           ],

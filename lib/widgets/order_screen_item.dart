@@ -31,10 +31,10 @@ class _OrderScreenItemState extends State<OrderScreenItem> {
                   height: 60,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '\$${widget.order.amount.toStringAsFixed(2)}',
-                        textAlign: TextAlign.left,
                         style: Theme.of(context)
                             .textTheme
                             .headline4
@@ -67,6 +67,7 @@ class _OrderScreenItemState extends State<OrderScreenItem> {
             if (_expanded)
               Divider(
                 color: Colors.black,
+                thickness: 1.5,
               ),
             if (_expanded)
               Container(
@@ -90,6 +91,7 @@ class _OrderScreenItemState extends State<OrderScreenItem> {
             if (_expanded)
               Divider(
                 color: Colors.black,
+                thickness: 1.5,
               ),
             // if (_expanded)
             //   Container(

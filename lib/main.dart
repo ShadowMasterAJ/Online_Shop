@@ -5,6 +5,7 @@ import './screens/product_overview_screen.dart';
 import './screens/product_detail_screen.dart';
 import './screens/cart_screen.dart';
 import './screens/orders_screen.dart';
+import '../screens/user_products_screen.dart';
 
 import './providers/products.dart';
 import './providers/cart.dart';
@@ -34,9 +35,10 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.grey,
             accentColor: Colors.deepOrange,
             primaryIconTheme: IconThemeData(color: Colors.amber),
-            canvasColor: Colors.grey,
+            canvasColor: Colors.grey[800],
+            dividerTheme: DividerThemeData(color: Colors.red, thickness: 1.5),
             textTheme: TextTheme(
-              headline6: TextStyle(color: Colors.deepOrange, fontSize: 22),
+              headline6: TextStyle(color: Colors.deepOrange, fontSize: 24),
               headline5: TextStyle(color: Colors.white),
               headline4:
                   TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -47,6 +49,7 @@ class MyApp extends StatelessWidget {
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
           OrdersScreen.routeName: (ctx) => OrdersScreen(),
+          UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
         },
       ),
     );

@@ -12,7 +12,43 @@ class CartItem extends StatefulWidget {
   @override
   _CartItemState createState() => _CartItemState();
 }
-//-----------------------------------------------------------------------------------------------
+
+Widget _showDeletionAlertBox(context) {
+  return AlertDialog(
+    title: Text(
+      'Are you sure?',
+      style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 24),
+    ),
+    content: Text(
+      'Do you want to remove this item from the cart?',
+      style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop(false);
+        },
+        child: Text(
+          'No',
+          style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 18),
+        ),
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop(true);
+        },
+        child: Text(
+          'Yes',
+          style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 18),
+        ),
+      ),
+    ],
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    backgroundColor: Colors.grey[800],
+    elevation: 10,
+  );
+}
+
 class _CartItemState extends State<CartItem> {
   @override
   Widget build(BuildContext context) {
@@ -35,11 +71,15 @@ class _CartItemState extends State<CartItem> {
         ),
       ),
       direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) {
+        return showDialog(
+            context: context, builder: (ctx) => _showDeletionAlertBox(context));
+      },
       onDismissed: (direction) {
         Provider.of<Cart>(context, listen: false).removeItem(widget.id);
       },
       child: Card(
-        elevation: 5,
+        elevation: 15,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Row(
@@ -82,7 +122,6 @@ class _CartItemState extends State<CartItem> {
             Container(
               margin: EdgeInsets.only(right: 10),
               height: 100,
-              // color: Colors.amber,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -117,6 +156,7 @@ class _CartItemState extends State<CartItem> {
                           Provider.of<Cart>(context, listen: false)
                               .subtractQuantity(widget.id);
                           if (widget.quantity <= 0) {
+                            print('Showing snacks');
                             Provider.of<Cart>(context, listen: false)
                                 .removeItem(widget.id);
                           }

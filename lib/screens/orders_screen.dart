@@ -33,12 +33,21 @@ class OrdersScreen extends StatelessWidget {
         ],
       ),
       drawer: AppDrawer(),
-      body: ListView.builder(
-        itemCount: ordersData.orders.length,
-        itemBuilder: (ctx, i) {
-          return OrderScreenItem(ordersData.orders[i]);
-        },
-      ),
+      body: ordersData.orders.length > 0
+          ? ListView.builder(
+              itemCount: ordersData.orders.length,
+              itemBuilder: (ctx, i) {
+                return OrderScreenItem(ordersData.orders[i]);
+              },
+            )
+          : Center(
+              child: Text(
+                'No Orders Yet!',
+                style: Theme.of(context).textTheme.headline3.copyWith(
+                      color: Theme.of(context).accentColor,
+                    ),
+              ),
+            ),
     );
   }
 }

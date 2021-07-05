@@ -22,82 +22,89 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
 
-    return Scaffold(
-        appBar: AppBar(
-          iconTheme: Theme.of(context).primaryIconTheme,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: Text(
-            'My Shop',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          backgroundColor: Colors.grey[900],
-          actions: [
-            Consumer<Cart>(
-              builder: (_, cart, child) => cart.itemCount > 0
-                  ? Badge(
-                      child: child,
-                      value: cart.itemCount.toString(),
-                    )
-                  : child,
-              child: IconButton(
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.orange,
+          Colors.deepOrange,
+          Colors.deepOrange,
+          Colors.orange,
+        ],
+      )),
+      child: Scaffold(
+          appBar: AppBar(
+            iconTheme: Theme.of(context).primaryIconTheme,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Text(
+              'ShopStop',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            backgroundColor: Colors.grey[900],
+            actions: [
+              Consumer<Cart>(
+                builder: (_, cart, child) => cart.itemCount > 0
+                    ? Badge(
+                        child: child,
+                        value: cart.itemCount.toString(),
+                      )
+                    : child,
+                child: IconButton(
+                  icon: Icon(
+                    cart.itemCount > 0
+                        ? Icons.shopping_cart
+                        : Icons.shopping_cart_outlined,
+                    size: 30,
+                    color: Theme.of(context).accentColor,
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+                    Navigator.of(context).pushNamed(CartScreen.routeName);
+                  },
+                ),
+              ),
+              PopupMenuButton<Object>(
+                color: Colors.black87,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                onSelected: (Object selection) {
+                  setState(() {
+                    selection == FilterOptions.Favorites
+                        ? _showFavorites = true
+                        : _showFavorites = false;
+                  });
+                },
                 icon: Icon(
-                  cart.itemCount > 0
-                      ? Icons.shopping_cart
-                      : Icons.shopping_cart_outlined,
+                  Icons.more_vert_rounded,
                   size: 30,
                   color: Theme.of(context).accentColor,
                 ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(CartScreen.routeName);
-                },
+                itemBuilder: (ctx) => <PopupMenuEntry<Object>>[
+                  PopupMenuItem(
+                    child: Text('Show Favourites',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 18, fontWeight: FontWeight.w100)),
+                    value: FilterOptions.Favorites,
+                  ),
+                  PopupMenuDivider(),
+                  PopupMenuItem(
+                    child: Text('Show All',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 18, fontWeight: FontWeight.w100)),
+                    value: FilterOptions.All,
+                  ),
+                ],
               ),
-            ),
-            PopupMenuButton<Object>(
-              color: Colors.black87,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              onSelected: (Object selection) {
-                setState(() {
-                  if (selection == FilterOptions.Favorites) {
-                    _showFavorites = true;
-                  } else {
-                    _showFavorites = false;
-                  }
-                });
-              },
-              icon: Icon(
-                Icons.more_vert_rounded,
-                size: 30,
-                color: Theme.of(context).accentColor,
-              ),
-              itemBuilder: (ctx) => <PopupMenuEntry<Object>>[
-                PopupMenuItem(
-                  child: Text('Show Favourites',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline5
-                          .copyWith(fontSize: 18, fontWeight: FontWeight.w100)),
-                  value: FilterOptions.Favorites,
-                ),
-                PopupMenuDivider(
-                    // height: 20,
-                    ),
-                PopupMenuItem(
-                  child: Text('Show All',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline5
-                          .copyWith(fontSize: 18, fontWeight: FontWeight.w100)),
-                  value: FilterOptions.All,
-                ),
-              ],
-            ),
-          ],
-        ),
-        drawer: AppDrawer(),
-        body: ProductsGrid(_showFavorites));
+            ],
+          ),
+          drawer: AppDrawer(),
+          body: SafeArea(child: ProductsGrid(_showFavorites))),
+    );
   }
 }

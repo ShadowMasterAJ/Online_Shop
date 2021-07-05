@@ -82,6 +82,7 @@ class _ProductItemState extends State<ProductItem> {
                           cart.addItem(
                             product.id,
                             product.title,
+                            product.imageURL,
                             product.price,
                           );
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();

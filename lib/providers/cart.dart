@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class CartItem {
-  final String id, title;
+  final String id, title, imageURL;
   int quantity;
   final double price;
 
@@ -10,6 +10,7 @@ class CartItem {
     this.price,
     this.quantity,
     this.title,
+    this.imageURL,
   });
 }
 
@@ -39,7 +40,7 @@ class Cart with ChangeNotifier {
     return total;
   }
 
-  void addItem(String productID, title, double price) {
+  void addItem(String productID, title, imageURL, double price) {
     if (_items.containsKey(productID)) {
       _items.update(
         productID,
@@ -47,19 +48,23 @@ class Cart with ChangeNotifier {
             id: productID,
             title: title,
             price: price,
+            imageURL: imageURL,
             quantity: currentProd.quantity + 1),
       );
     } else {
       _items.putIfAbsent(
           productID,
-          () =>
-              CartItem(id: productID, title: title, price: price, quantity: 1));
+          () => CartItem(
+              id: productID,
+              title: title,
+              price: price,
+              imageURL: imageURL,
+              quantity: 1));
       notifyListeners();
     }
   }
 
   void removeItem(String productId) {
-    
     _items.remove(productId);
     notifyListeners();
   }
@@ -75,6 +80,7 @@ class Cart with ChangeNotifier {
               id: existingItem.id,
               price: existingItem.price,
               title: existingItem.title,
+              imageURL: existingItem.imageURL,
               quantity: existingItem.quantity - 1));
     } else {
       removeItem(productId);
@@ -89,6 +95,7 @@ class Cart with ChangeNotifier {
             id: existingItem.id,
             price: existingItem.price,
             title: existingItem.title,
+            imageURL: existingItem.imageURL,
             quantity: existingItem.quantity + 1));
     notifyListeners();
   }

@@ -23,7 +23,7 @@ class UserProductScreenItem extends StatelessWidget {
                 onPressed: () {},
                 icon: Icon(
                   Icons.edit,
-                  color: Theme.of(context).accentColor,
+                  color: Colors.black,
                 )),
             IconButton(
               onPressed: () {},

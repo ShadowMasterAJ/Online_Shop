@@ -13,41 +13,54 @@ class OrdersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ordersData = Provider.of<Orders>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Text(
-          'My Orders',
-          style: Theme.of(context).textTheme.headline5,
-        ),
-        backgroundColor: Colors.grey[900],
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushReplacementNamed('/');
-            },
-            icon: Icon(Icons.home_filled),
-          )
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.orange,
+          Colors.deepOrange,
+          Colors.deepOrange,
+          Colors.orange,
         ],
-      ),
-      drawer: AppDrawer(),
-      body: ordersData.orders.length > 0
-          ? ListView.builder(
-              itemCount: ordersData.orders.length,
-              itemBuilder: (ctx, i) {
-                return OrderScreenItem(ordersData.orders[i]);
+      )),
+      child: Scaffold(
+        appBar: AppBar(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'My Orders',
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          backgroundColor: Colors.grey[900],
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pushReplacementNamed('/');
               },
+              icon: Icon(Icons.home_filled),
             )
-          : Center(
-              child: Text(
-                'No Orders Yet!',
-                style: Theme.of(context).textTheme.headline3.copyWith(
-                      color: Theme.of(context).accentColor,
-                    ),
+          ],
+        ),
+        drawer: AppDrawer(),
+        body: ordersData.orders.length > 0
+            ? ListView.builder(
+                itemCount: ordersData.orders.length,
+                itemBuilder: (ctx, i) {
+                  return OrderScreenItem(ordersData.orders[i]);
+                },
+              )
+            : Center(
+                child: Text(
+                  'No Orders Yet!',
+                  style: Theme.of(context).textTheme.headline3.copyWith(
+                        color: Theme.of(context).accentColor,
+                      ),
+                ),
               ),
-            ),
+      ),
     );
   }
 }

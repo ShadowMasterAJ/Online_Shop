@@ -3,14 +3,15 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
 
-class CartItem extends StatefulWidget {
-  final String id, title;
+class CartScreenItem extends StatefulWidget {
+  final String id, title, imageURL;
   final double price;
   final int quantity;
-  CartItem({this.id, this.price, this.quantity, this.title});
+  CartScreenItem(
+      {this.id, this.price, this.quantity, this.title, this.imageURL});
 
   @override
-  _CartItemState createState() => _CartItemState();
+  _CartScreenItemState createState() => _CartScreenItemState();
 }
 
 Widget _showDeletionAlertBox(context) {
@@ -49,7 +50,7 @@ Widget _showDeletionAlertBox(context) {
   );
 }
 
-class _CartItemState extends State<CartItem> {
+class _CartScreenItemState extends State<CartScreenItem> {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
@@ -79,28 +80,24 @@ class _CartItemState extends State<CartItem> {
         Provider.of<Cart>(context, listen: false).removeItem(widget.id);
       },
       child: Card(
+        color: Colors.grey[200],
         elevation: 15,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              height: 100,
-              decoration: BoxDecoration(
-                color: Theme.of(context).accentColor,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.black),
-              ),
-              child: Chip(
-                label: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    '\$${widget.price}',
-                    style: TextStyle(fontSize: 24),
-                  ),
+            CircleAvatar(
+              backgroundColor: Colors.grey[200],
+              radius: 50,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: Image.network(
+                  widget.imageURL,
+                  fit: BoxFit.cover,
+                  height: 90,
+                  width: 90,
                 ),
-                backgroundColor: Theme.of(context).accentColor,
               ),
             ),
             Column(
@@ -141,7 +138,7 @@ class _CartItemState extends State<CartItem> {
                     ),
                   ),
                   SizedBox(
-                    height: 7,
+                    height: 5,
                   ),
                   Flexible(
                     fit: FlexFit.loose,

@@ -5,8 +5,8 @@ import './screens/product_overview_screen.dart';
 import './screens/product_detail_screen.dart';
 import './screens/cart_screen.dart';
 import './screens/orders_screen.dart';
-import '../screens/user_products_screen.dart';
-
+import './screens/user_products_screen.dart';
+import './screens/edit_user_product_state_screen.dart';
 import './providers/products.dart';
 import './providers/cart.dart';
 import './providers/orders.dart';
@@ -35,8 +35,11 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.grey,
             accentColor: Colors.deepOrange,
             primaryIconTheme: IconThemeData(color: Colors.amber),
-            canvasColor: Colors.grey[800],
+            canvasColor: Colors.grey.withAlpha(165),
             dividerTheme: DividerThemeData(color: Colors.red, thickness: 1.5),
+            appBarTheme: AppBarTheme(
+                backgroundColor: Colors.grey[900],
+                titleTextStyle: Theme.of(context).textTheme.headline6),
             textTheme: TextTheme(
               headline6: TextStyle(color: Colors.deepOrange, fontSize: 24),
               headline5: TextStyle(color: Colors.white),
@@ -50,6 +53,8 @@ class MyApp extends StatelessWidget {
           CartScreen.routeName: (ctx) => CartScreen(),
           OrdersScreen.routeName: (ctx) => OrdersScreen(),
           UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+          EdiUserProductsStateScreen.routeName: (ctx) =>
+              EdiUserProductsStateScreen(),
         },
       ),
     );

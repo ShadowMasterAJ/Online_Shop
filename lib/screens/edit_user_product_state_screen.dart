@@ -19,11 +19,11 @@ class _EdiUserProductsStateScreenState
   final _imageUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
   var _isInit = true;
-  var _initValues = {
+  Map<String, String> _initValues = {
     'title': '',
     'description': '',
     'imageURL': '',
-    'price': 0,
+    'price': '',
   };
   var _editedProduct = Product(
     id: null,
@@ -35,11 +35,12 @@ class _EdiUserProductsStateScreenState
 
   @override
   void dispose() {
+    _imageURLFocusNode.removeListener(_updateImageURL);
+
     _priceFocusNode.dispose();
     _descriptionFocusNode.dispose();
     _imageUrlController.dispose();
     _imageURLFocusNode.dispose();
-    _imageURLFocusNode.removeListener(_updateImageURL);
 
     super.dispose();
   }
@@ -269,7 +270,7 @@ class _EdiUserProductsStateScreenState
                               ),
                     ),
                     maxLines: null,
-                    keyboardType: TextInputType.multiline,
+                    keyboardType: TextInputType.url,
                     textInputAction: TextInputAction.done,
                     controller: _imageUrlController,
                     onFieldSubmitted: (_) => _saveForm(),

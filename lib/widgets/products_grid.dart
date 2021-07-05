@@ -26,14 +26,16 @@ class ProductsGrid extends StatelessWidget {
               child: ProductItem(),
             ),
           )
-        : Center(
-            child: Text(
-              'No Favorites Yet!',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline4.copyWith(
-                    color: Theme.of(context).accentColor,
-                  ),
-            ),
-          );
+        : !_showFavs
+            ? Center(
+                child: Text('No Items Yet!',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline4),
+              )
+            : Center(
+                child: Text('No Favorite Items Yet!',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline4),
+              );
   }
 }

@@ -56,6 +56,7 @@ class UserProductsScreen extends StatelessWidget {
                   itemBuilder: (_, i) => Column(
                         children: [
                           UserProductScreenItem(
+                            id: productsData.items[i].id,
                             imageURL: productsData.items[i].imageURL,
                             title: productsData.items[i].title,
                           ),

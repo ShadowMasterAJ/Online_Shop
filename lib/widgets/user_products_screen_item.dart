@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import '../screens/edit_user_product_state_screen.dart';
 
 class UserProductScreenItem extends StatelessWidget {
-  final String title, imageURL;
-  UserProductScreenItem({this.imageURL, this.title});
+  final String id, title, imageURL;
+  UserProductScreenItem({this.id, this.imageURL, this.title});
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -20,7 +21,10 @@ class UserProductScreenItem extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(
+                      context, EdiUserProductsStateScreen.routeName,arguments: id);
+                },
                 icon: Icon(
                   Icons.edit,
                   color: Colors.black,

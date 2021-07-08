@@ -7,7 +7,6 @@ import '../widgets/user_products_screen_item.dart';
 import '../screens/edit_user_product_state_screen.dart';
 
 class UserProductsScreen extends StatelessWidget {
-  
   static const routeName = '/user-products';
   @override
   Widget build(BuildContext context) {
@@ -30,8 +29,20 @@ class UserProductsScreen extends StatelessWidget {
               'Your Products',
               style: Theme.of(context).textTheme.headline6,
             ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             backgroundColor: Colors.grey[900],
             actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed('/');
+                },
+                icon: Icon(
+                  Icons.home_filled,
+                  color: Theme.of(context).accentColor,
+                ),
+              ),
               IconButton(
                 onPressed: () {
                   Navigator.of(context)
@@ -59,16 +70,19 @@ class UserProductsScreen extends StatelessWidget {
                                 children: [
                                   UserProductScreenItem(
                                     id: productsData.items[i].id,
+                                    price: productsData.items[i].price,
+                                    description:
+                                        productsData.items[i].description,
                                     imageURL: productsData.items[i].imageURL,
                                     title: productsData.items[i].title,
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 7),
-                                    child: Divider(
-                                      color: Colors.black,
-                                    ),
-                                  )
+                                  // Container(
+                                  //   margin: EdgeInsets.symmetric(
+                                  //       horizontal: 10, vertical: 7),
+                                  //   child: Divider(
+                                  //     color: Colors.black,
+                                  //   ),
+                                  // )
                                 ],
                               )),
                     ),

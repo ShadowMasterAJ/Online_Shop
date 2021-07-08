@@ -40,7 +40,11 @@ class OrdersScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pushReplacementNamed('/');
               },
-              icon: Icon(Icons.home_filled),
+              icon: Icon(
+                Icons.home_filled,
+                color: Theme.of(context).accentColor,
+              ),
+              tooltip: 'Add Item',
             )
           ],
         ),
@@ -56,7 +60,7 @@ class OrdersScreen extends StatelessWidget {
                 child: Text(
                   'No Orders Yet!',
                   style: Theme.of(context).textTheme.headline3.copyWith(
-                        color: Theme.of(context).accentColor,
+                        color: Colors.black,
                       ),
                 ),
               ),

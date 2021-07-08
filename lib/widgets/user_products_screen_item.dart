@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../screens/edit_user_product_state_screen.dart';
 import '../providers/products.dart';
+import '../screens/product_detail_screen.dart';
 
-class UserProductScreenItem extends StatelessWidget {
+class UserProductScreenItem extends StatefulWidget {
+  final String id, title, description, imageURL;
+  final double price;
+  UserProductScreenItem({
+    this.description,
+    this.price,
+    this.id,
+    this.imageURL,
+    this.title,
+  });
+
+  @override
+  _UserProductScreenItemState createState() => _UserProductScreenItemState();
+}
+
+class _UserProductScreenItemState extends State<UserProductScreenItem> {
+  bool _showDescription = false;
+
   Widget _showDeletionAlertBox(context) {
     return AlertDialog(
       title: Text(
@@ -26,7 +45,8 @@ class UserProductScreenItem extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            Provider.of<Products>(context, listen: false).deleteProduct(id);
+            Provider.of<Products>(context, listen: false)
+                .deleteProduct(widget.id);
             Navigator.of(context).pop(true);
           },
           child: Text(
@@ -41,46 +61,106 @@ class UserProductScreenItem extends StatelessWidget {
     );
   }
 
-  final String id, title, imageURL;
-  UserProductScreenItem({this.id, this.imageURL, this.title});
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        // minRadius: 40,
-        radius: 30,
-        backgroundImage: NetworkImage(imageURL),
-      ),
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 22),
-      ),
-      trailing: Container(
-        width: 100,
-        child: Row(
-          children: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                      context, EdiUserProductsStateScreen.routeName,
-                      arguments: id);
-                },
-                icon: Icon(
-                  Icons.edit,
-                  color: Colors.black,
-                )),
-            IconButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (ctx) => _showDeletionAlertBox(context));
-              },
-              icon: Icon(
-                Icons.delete,
-                color: Theme.of(context).errorColor,
+    return GestureDetector(onTap: () {
+        Navigator.of(context).pushNamed(
+          ProductDetailScreen.routeName,
+          arguments: widget.id,
+        );
+      },
+          child: Card(
+        elevation: 15,
+        color: Colors.grey[200],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              ListTile(
+                leading: CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(widget.imageURL),
+                ),
+                title: Text(
+                  widget.title,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline4
+                      .copyWith(fontSize: 22),
+                ),
+                subtitle: Text(
+                  '\$${widget.price}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline4
+                      .copyWith(fontSize: 18),
+                ),
+                trailing: Container(
+                  width: 100,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _showDescription = !_showDescription;
+                            });
+                          },
+                          tooltip: 'Item Description',
+                          icon: Icon(
+                            Icons.info,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: IconButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, EdiUserProductsStateScreen.routeName,
+                                  arguments: widget.id);
+                            },
+                            tooltip: 'Edit Item',
+                            icon: Icon(
+                              Icons.edit,
+                              color: Theme.of(context).accentColor,
+                            )),
+                      ),
+                      Expanded(
+                        child: IconButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (ctx) => _showDeletionAlertBox(context));
+                          },
+                          tooltip: 'Delete Item',
+                          icon: Icon(
+                            Icons.delete,
+                            color: Theme.of(context).errorColor,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            )
-          ],
+              if (_showDescription)
+                Container(
+                  padding:
+                      EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 15),
+                  child: Text(
+                    widget.description,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline4
+                        .copyWith(fontSize: 20),
+                  ),
+                )
+            ],
+          ),
         ),
       ),
     );

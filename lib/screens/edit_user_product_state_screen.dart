@@ -86,7 +86,7 @@ class _EdiUserProductsStateScreenState
     }
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -103,16 +103,40 @@ class _EdiUserProductsStateScreenState
       });
       Navigator.pop(context);
     } else {
-      Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct)
-          .then((_) {
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (error) {
+        await showDialog<Null>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  elevation: 10,
+                  backgroundColor: Colors.grey[900],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: Text('An error ocurred',
+                      style: TextStyle(color: Theme.of(context).errorColor)),
+                  content: Text('Something went wrong',
+                      style: TextStyle(color: Theme.of(context).accentColor)),
+                  actions: [
+                    TextButton(
+                      child: Text(
+                        'Okay',
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                      ),
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                    )
+                  ],
+                ));
+      } finally {
         setState(() {
           _isLoading = false;
         });
         Navigator.pop(context);
-      });
+      }
     }
-    print(_editedProduct.title);
   }
 
   @override

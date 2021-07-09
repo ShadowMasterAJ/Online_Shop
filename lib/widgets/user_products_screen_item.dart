@@ -63,13 +63,14 @@ class _UserProductScreenItemState extends State<UserProductScreenItem> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(onTap: () {
+    return GestureDetector(
+      onTap: () {
         Navigator.of(context).pushNamed(
           ProductDetailScreen.routeName,
           arguments: widget.id,
         );
       },
-          child: Card(
+      child: Card(
         elevation: 15,
         color: Colors.grey[200],
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -83,15 +84,18 @@ class _UserProductScreenItemState extends State<UserProductScreenItem> {
                   radius: 30,
                   backgroundImage: NetworkImage(widget.imageURL),
                 ),
-                title: Text(
-                  widget.title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline4
-                      .copyWith(fontSize: 22),
+                title: Container(
+                  margin: EdgeInsets.only(bottom: 5),
+                  child: Text(
+                    widget.title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline4
+                        .copyWith(fontSize: 22),
+                  ),
                 ),
                 subtitle: Text(
-                  '\$${widget.price}',
+                  '\$${widget.price.toStringAsFixed(2)}',
                   style: Theme.of(context)
                       .textTheme
                       .headline4
@@ -134,7 +138,8 @@ class _UserProductScreenItemState extends State<UserProductScreenItem> {
                           onPressed: () {
                             showDialog(
                                 context: context,
-                                builder: (ctx) => _showDeletionAlertBox(context));
+                                builder: (ctx) =>
+                                    _showDeletionAlertBox(context));
                           },
                           tooltip: 'Delete Item',
                           icon: Icon(

@@ -29,13 +29,15 @@ class _ProductItemState extends State<ProductItem> {
       },
       child: Stack(children: [
         Container(
-          height: MediaQuery.of(context).size.height * .2,
+          height: 300,
           decoration: BoxDecoration(
+              color: Colors.black,
               border: Border.all(
                 color: Colors.black,
                 width: 2,
               ),
               borderRadius: BorderRadius.circular(20)),
+          margin: EdgeInsets.only(bottom: 40),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(18),
             child: GridTile(
@@ -44,12 +46,13 @@ class _ProductItemState extends State<ProductItem> {
                 fit: BoxFit.fill,
               ),
               footer: Container(
+                height: 70,
                 child: GridTileBar(
                   backgroundColor: Colors.black87,
                   leading: Consumer<Product>(
                     builder: (ctx, product, _) => IconButton(
-                      iconSize: 20,
-                      padding: EdgeInsets.all(1),
+                      iconSize: 25,
+                      padding: EdgeInsets.all(0),
                       onPressed: product.toggleFavoriteStatus,
                       icon: Icon(
                         product.isFavorite
@@ -61,8 +64,10 @@ class _ProductItemState extends State<ProductItem> {
                   ),
                   title: Text(
                     product.title,
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 20),
                     textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                     softWrap: true,
                   ),
                   trailing: Consumer<Cart>(
@@ -75,7 +80,7 @@ class _ProductItemState extends State<ProductItem> {
                               )
                             : child,
                     child: IconButton(
-                      iconSize: 20,
+                      iconSize: 25,
                       padding: EdgeInsets.all(0),
                       onPressed: () {
                         setState(() {
@@ -88,9 +93,13 @@ class _ProductItemState extends State<ProductItem> {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
                               duration: Duration(seconds: 3),
-                              content:
-                                  Text('Item was successfully added to cart'),
+                              content: Text(
+                                'Item was successfully added to cart',
+                                style: TextStyle(fontSize: 20),
+                              ),
                               action: SnackBarAction(
                                 label: 'UNDO',
                                 onPressed: () {
@@ -119,7 +128,7 @@ class _ProductItemState extends State<ProductItem> {
           right: 45,
           bottom: 0,
           child: Container(
-            height: 40,
+            height: 50,
             decoration: BoxDecoration(
               // boxShadow: [
               //   BoxShadow(offset: Offset(0, 10), blurRadius: 50),
@@ -133,12 +142,12 @@ class _ProductItemState extends State<ProductItem> {
             ),
             alignment: Alignment.center,
             child: Text(
-              '\$${product.price}',
+              '\$${product.price.toStringAsFixed(2)}',
               style:
-                  Theme.of(context).textTheme.headline6.copyWith(fontSize: 18),
+                  Theme.of(context).textTheme.headline6.copyWith(fontSize: 20),
             ),
           ),
-        )
+        ),
       ]),
     );
   }

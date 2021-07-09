@@ -6,6 +6,7 @@ import '../widgets/badge.dart';
 import '../widgets/app_drawer.dart';
 
 import '../providers/cart.dart';
+import '../providers/products.dart';
 
 import '../screens/cart_screen.dart';
 
@@ -18,6 +19,25 @@ class ProductOverviewScreen extends StatefulWidget {
 
 class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   var _showFavorites = false;
+  var _initState = true;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _refreshProdData(BuildContext context) async {
+    await Provider.of<Products>(context, listen: false).fetchAndGetProducts();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_initState) {
+      Provider.of<Products>(context).fetchAndGetProducts();
+    }
+    _initState = false;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
@@ -104,7 +124,11 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
             ],
           ),
           drawer: AppDrawer(),
-          body: SafeArea(child: ProductsGrid(_showFavorites))),
+          body: RefreshIndicator(
+              onRefresh: () => _refreshProdData(context),
+              backgroundColor: Colors.black,
+              color: Theme.of(context).accentColor,
+              child: SafeArea(child: ProductsGrid(_showFavorites)))),
     );
   }
 }

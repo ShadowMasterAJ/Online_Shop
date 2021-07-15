@@ -96,12 +96,8 @@ class _EdiUserProductsStateScreenState
       _isLoading = true;
     });
     if (_editedProduct.id != null) {
-      Provider.of<Products>(context, listen: false)
+      await Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.pop(context);
     } else {
       try {
         await Provider.of<Products>(context, listen: false)
@@ -130,13 +126,12 @@ class _EdiUserProductsStateScreenState
                     )
                   ],
                 ));
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.pop(context);
       }
     }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.pop(context);
   }
 
   @override

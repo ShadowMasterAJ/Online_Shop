@@ -24,6 +24,8 @@ class _UserProductScreenItemState extends State<UserProductScreenItem> {
   bool _showDescription = false;
 
   Widget _showDeletionAlertBox(context) {
+    var scaffoldMessenger = ScaffoldMessenger.of(context);
+    var theme = Theme.of(context);
     return AlertDialog(
       title: Text(
         'Are you sure?',
@@ -44,10 +46,36 @@ class _UserProductScreenItemState extends State<UserProductScreenItem> {
           ),
         ),
         TextButton(
-          onPressed: () {
-            Provider.of<Products>(context, listen: false)
-                .deleteProduct(widget.id);
-            Navigator.of(context).pop(true);
+          onPressed: () async {
+            try {
+              Navigator.of(context).pop(true);
+
+              await Provider.of<Products>(context, listen: false)
+                  .deleteProduct(widget.id);
+              scaffoldMessenger.showSnackBar(
+                SnackBar(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  content: Text(
+                    "Item Deleted Successfully!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.lightGreen, fontSize: 20),
+                  ),
+                ),
+              );
+            } catch (error) {
+              scaffoldMessenger.showSnackBar(
+                SnackBar(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  content: Text(
+                    "Deletion failed!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: theme.errorColor, fontSize: 20),
+                  ),
+                ),
+              );
+            }
           },
           child: Text(
             'Yes',

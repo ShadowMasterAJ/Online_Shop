@@ -94,11 +94,12 @@ class _ProductItemState extends State<ProductItem> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
+                                  borderRadius: BorderRadius.circular(10)),
                               duration: Duration(seconds: 3),
                               content: Text(
                                 'Item was successfully added to cart',
-                                style: TextStyle(fontSize: 20),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.lightGreen),
                               ),
                               action: SnackBarAction(
                                 label: 'UNDO',

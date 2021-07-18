@@ -102,20 +102,7 @@ class CartScreen extends StatelessWidget {
                   border: Border.all(color: Colors.deepOrange, width: 2),
                 ),
                 child: cart.itemCount > 0
-                    ? TextButton(
-                        onPressed: () {
-                          Provider.of<Orders>(context, listen: false).addOrder(
-                            cart.items.values.toList(),
-                            cart.totalAmount,
-                          );
-                          cart.clearItems();
-                          Navigator.of(context).pushReplacementNamed('/');
-                        },
-                        child: Text(
-                          'ORDER NOW',
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                      )
+                    ? OrderButton(cart: cart)
                     : Text(
                         'Add Items to Cart to place an Order',
                         style: Theme.of(context).textTheme.headline5,
@@ -126,5 +113,50 @@ class CartScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key key,
+    @required this.cart,
+  }) : super(key: key);
+
+  final Cart cart;
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  @override
+  Widget build(BuildContext context) {
+    var _isLoading = false;
+    return _isLoading
+        ? CircularProgressIndicator(
+            color: Theme.of(context).accentColor,
+          )
+        : TextButton(
+            onPressed: (_isLoading)
+                ? null
+                : () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    await Provider.of<Orders>(context, listen: false).addOrder(
+                      widget.cart.items.values.toList(),
+                      widget.cart.totalAmount,
+                    );
+                    setState(() {
+                      _isLoading = false;
+                    });
+                    widget.cart.clearItems();
+                    Navigator.of(context).pushReplacementNamed('/');
+                  },
+            child: Text(
+              'ORDER NOW',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+          );
   }
 }

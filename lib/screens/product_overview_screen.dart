@@ -20,6 +20,8 @@ class ProductOverviewScreen extends StatefulWidget {
 class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   var _showFavorites = false;
   var _initState = true;
+  var _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -32,7 +34,14 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   @override
   void didChangeDependencies() {
     if (_initState) {
-      Provider.of<Products>(context).fetchAndGetProducts();
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context).fetchAndGetProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
     }
     _initState = false;
     super.didChangeDependencies();
@@ -83,8 +92,8 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
                   ),
                   onPressed: () {
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
                     Navigator.of(context).pushNamed(CartScreen.routeName);
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   },
                 ),
               ),
@@ -124,11 +133,18 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
             ],
           ),
           drawer: AppDrawer(),
-          body: RefreshIndicator(
-              onRefresh: () => _refreshProdData(context),
-              backgroundColor: Colors.black,
-              color: Theme.of(context).accentColor,
-              child: SafeArea(child: ProductsGrid(_showFavorites)))),
+          body: _isLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).accentColor,
+                    backgroundColor: Colors.black,
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: () => _refreshProdData(context),
+                  backgroundColor: Colors.black,
+                  color: Theme.of(context).accentColor,
+                  child: SafeArea(child: ProductsGrid(_showFavorites)))),
     );
   }
 }

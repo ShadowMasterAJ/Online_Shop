@@ -22,10 +22,13 @@ class _ProductItemState extends State<ProductItem> {
 
     return GestureDetector(
       onTap: () {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
         Navigator.of(context).pushNamed(
           ProductDetailScreen.routeName,
           arguments: product.id,
         );
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
       },
       child: Stack(children: [
         Container(

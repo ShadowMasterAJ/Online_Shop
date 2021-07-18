@@ -6,8 +6,21 @@ import '../providers/orders.dart';
 import '../widgets/order_screen_item.dart';
 import '../widgets/app_drawer.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   static const routeName = '/orders';
+
+  @override
+  _OrdersScreenState createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
+  var _isLoading = false;
+  @override
+  void initState() {
+    Future.delayed(Duration.zero).then((_) =>
+        {Provider.of<Orders>(context, listen: false).fetchAndSetOrders()});
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,21 +62,41 @@ class OrdersScreen extends StatelessWidget {
           ],
         ),
         drawer: AppDrawer(),
-        body: ordersData.orders.length > 0
-            ? ListView.builder(
-                itemCount: ordersData.orders.length,
-                itemBuilder: (ctx, i) {
-                  return OrderScreenItem(ordersData.orders[i]);
-                },
-              )
-            : Center(
-                child: Text(
-                  'No Orders Yet!',
-                  style: Theme.of(context).textTheme.headline3.copyWith(
-                        color: Colors.black,
-                      ),
-                ),
-              ),
+        body: FutureBuilder(
+          future:
+              Provider.of<Orders>(context, listen: false).fetchAndSetOrders(),
+          builder: (ctx, dataSnapshot) {
+            if (dataSnapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else {
+              if (dataSnapshot.error != null) {
+                // ...
+                // Do error handling stuff
+                return Center(
+                  child: Text('An error occurred!'),
+                );
+              } else {
+                return ordersData.orders.length < 0
+                    ? Center(
+                        child: Text(
+                          'No Orders Yet!',
+                          style: Theme.of(context).textTheme.headline3.copyWith(
+                                color: Colors.black,
+                              ),
+                        ),
+                      )
+                    : Consumer<Orders>(
+                        builder: (ctx, orderData, child) => ListView.builder(
+                          itemCount: ordersData.orders.length,
+                          itemBuilder: (ctx, i) {
+                            return OrderScreenItem(ordersData.orders[i]);
+                          },
+                        ),
+                      );
+              }
+            }
+          },
+        ),
       ),
     );
   }

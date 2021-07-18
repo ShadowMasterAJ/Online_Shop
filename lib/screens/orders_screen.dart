@@ -14,7 +14,6 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
-  var _isLoading = false;
   @override
   void initState() {
     Future.delayed(Duration.zero).then((_) =>

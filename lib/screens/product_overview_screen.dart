@@ -133,18 +133,20 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
             ],
           ),
           drawer: AppDrawer(),
-          body: _isLoading
-              ? Center(
-                  child: CircularProgressIndicator(
-                    color: Theme.of(context).accentColor,
+          body: Container(
+            child: _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).accentColor,
+                      backgroundColor: Colors.black,
+                    ),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () => _refreshProdData(context),
                     backgroundColor: Colors.black,
-                  ),
-                )
-              : RefreshIndicator(
-                  onRefresh: () => _refreshProdData(context),
-                  backgroundColor: Colors.black,
-                  color: Theme.of(context).accentColor,
-                  child: SafeArea(child: ProductsGrid(_showFavorites)))),
+                    color: Theme.of(context).accentColor,
+                    child: SafeArea(child: ProductsGrid(_showFavorites))),
+          )),
     );
   }
 }

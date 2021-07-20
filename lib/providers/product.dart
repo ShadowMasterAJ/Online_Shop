@@ -16,10 +16,10 @@ class Product with ChangeNotifier {
     @required this.price,
     this.isFavorite = false,
   });
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String _authToken) async {
     isFavorite = !isFavorite;
     final url = Uri.parse(
-        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json');
+        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$_authToken');
     await http.patch(url,
         body: json.encode({
           'isFavorite': isFavorite

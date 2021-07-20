@@ -20,47 +20,54 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(
+      providers: [
+        ChangeNotifierProvider(
           create: (ctx) => Auth(),
         ),
-        ChangeNotifierProvider(
-          create: (ctx) => Products(),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          create: (context) => Products('', []),
+          update: (ctx, auth, prevProducts) => Products(
+              auth.token, prevProducts == null ? [] : prevProducts.items),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Cart(),
         ),
-        ChangeNotifierProvider(
-          create: (ctx) => Orders(),
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          create: (ctx) => Orders('', []),
+          update: (ctx, auth, prevOrders) =>
+              Orders(auth.token, prevOrders == null ? {} : prevOrders.orders),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'MyShop',
-        theme: ThemeData(
-            primarySwatch: Colors.grey,
-            accentColor: Colors.deepOrange,
-            primaryIconTheme: IconThemeData(color: Colors.amber),
-            canvasColor: Colors.grey.withAlpha(165),
-            dividerTheme: DividerThemeData(color: Colors.red, thickness: 1.5),
-            appBarTheme: AppBarTheme(
-                backgroundColor: Colors.grey[900],
-                titleTextStyle: Theme.of(context).textTheme.headline6),
-            textTheme: TextTheme(
-              headline6: TextStyle(color: Colors.deepOrange, fontSize: 24),
-              headline5: TextStyle(color: Colors.white),
-              headline4:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            ),
-            fontFamily: 'Lato'),
-        home: AuthScreen(),
-        // ProductOverviewScreen(),
-        routes: {
-          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-          CartScreen.routeName: (ctx) => CartScreen(),
-          OrdersScreen.routeName: (ctx) => OrdersScreen(),
-          UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
-          EdiUserProductsStateScreen.routeName: (ctx) => EdiUserProductsStateScreen(),
-        },
+      child: Consumer<Auth>(
+        builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'MyShop',
+          theme: ThemeData(
+              primarySwatch: Colors.grey,
+              accentColor: Colors.deepOrange,
+              primaryIconTheme: IconThemeData(color: Colors.amber),
+              canvasColor: Colors.grey.withAlpha(165),
+              dividerTheme: DividerThemeData(color: Colors.red, thickness: 1.5),
+              appBarTheme: AppBarTheme(
+                  backgroundColor: Colors.grey[900],
+                  titleTextStyle: Theme.of(context).textTheme.headline6),
+              textTheme: TextTheme(
+                headline6: TextStyle(color: Colors.deepOrange, fontSize: 24),
+                headline5: TextStyle(color: Colors.white),
+                headline4:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              fontFamily: 'Lato'),
+          home: auth.isAuth ? ProductOverviewScreen() : AuthScreen(),
+          routes: {
+            ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+            CartScreen.routeName: (ctx) => CartScreen(),
+            OrdersScreen.routeName: (ctx) => OrdersScreen(),
+            UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+            EdiUserProductsStateScreen.routeName: (ctx) =>
+                EdiUserProductsStateScreen(),
+          },
+        ),
       ),
     );
   }

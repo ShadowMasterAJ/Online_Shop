@@ -5,6 +5,7 @@ import '../screens/product_detail_screen.dart';
 import '../providers/product.dart';
 import '../providers/cart.dart';
 import '../widgets/badge.dart';
+import '../providers/auth.dart';
 
 class ProductItem extends StatefulWidget {
   // String id, title, imageURL;
@@ -19,6 +20,7 @@ class _ProductItemState extends State<ProductItem> {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final authData = Provider.of<Auth>(context, listen: false);
 
     return GestureDetector(
       onTap: () {
@@ -56,7 +58,8 @@ class _ProductItemState extends State<ProductItem> {
                     builder: (ctx, product, _) => IconButton(
                       iconSize: 25,
                       padding: EdgeInsets.all(0),
-                      onPressed: product.toggleFavoriteStatus,
+                      onPressed: () =>
+                          product.toggleFavoriteStatus(authData.token),
                       icon: Icon(
                         product.isFavorite
                             ? Icons.favorite

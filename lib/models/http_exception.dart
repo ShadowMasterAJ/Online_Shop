@@ -4,7 +4,7 @@ class HttpException implements Exception {
 
   @override
   String toString() {
-    print(message);
+    print('Error: $message');
     return message;
   }
 }

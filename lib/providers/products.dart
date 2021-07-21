@@ -41,8 +41,13 @@ class Products with ChangeNotifier {
     //       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     // ),
   ];
-  String _authToken;
-  Products(this._authToken,this._items);
+  String authToken;
+  String userID;
+  Products(
+    this.authToken,
+    this.userID,
+    this._items,
+  );
   List<Product> get items {
     return [..._items];
   }
@@ -56,12 +61,16 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndGetProducts() async {
-    final url = Uri.parse(
-        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$_authToken');
+    var url = Uri.parse(
+        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
     try {
       final response = await http.get(url);
       final List<Product> fetchedProducts = [];
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      url = Uri.parse(
+          'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/userFavorites/$userID.json?auth=$authToken');
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
       extractedData?.forEach((id, prodData) {
         fetchedProducts.add(Product(
           id: id,
@@ -69,7 +78,7 @@ class Products with ChangeNotifier {
           description: prodData['description'],
           imageURL: prodData['imageURL'],
           price: prodData['price'],
-          isFavorite: prodData['isFavorite'],
+          isFavorite: favoriteData == null ? false : favoriteData[id] ?? false,
         ));
         _items = fetchedProducts;
       });
@@ -80,7 +89,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     final url = Uri.parse(
-        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$_authToken');
+        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
     try {
       final response = await http.post(
         url,
@@ -111,7 +120,7 @@ class Products with ChangeNotifier {
   Future<void> updateProduct(String id, Product newProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     final url = Uri.parse(
-        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$_authToken');
+        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$authToken');
     await http.patch(url,
         body: json.encode({
           'title': newProduct.title,
@@ -129,7 +138,7 @@ class Products with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final url = Uri.parse(
-        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$_authToken');
+        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$authToken');
 
     final existingProductIndex =
         _items.indexWhere((element) => element.id == id);

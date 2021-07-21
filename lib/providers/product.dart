@@ -16,14 +16,11 @@ class Product with ChangeNotifier {
     @required this.price,
     this.isFavorite = false,
   });
-  Future<void> toggleFavoriteStatus(String _authToken) async {
+  Future<void> toggleFavoriteStatus(String authToken, String userID) async {
     isFavorite = !isFavorite;
     final url = Uri.parse(
-        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$_authToken');
-    await http.patch(url,
-        body: json.encode({
-          'isFavorite': isFavorite
-        }));
+        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/userFavorites/$userID/$id.json?auth=$authToken');
+    await http.put(url, body: json.encode(isFavorite));
     notifyListeners();
   }
 }

@@ -58,8 +58,8 @@ class _ProductItemState extends State<ProductItem> {
                     builder: (ctx, product, _) => IconButton(
                       iconSize: 25,
                       padding: EdgeInsets.all(0),
-                      onPressed: () =>
-                          product.toggleFavoriteStatus(authData.token),
+                      onPressed: () => product.toggleFavoriteStatus(
+                          authData.token, authData.userID),
                       icon: Icon(
                         product.isFavorite
                             ? Icons.favorite

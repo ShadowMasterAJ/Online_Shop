@@ -60,9 +60,11 @@ class Products with ChangeNotifier {
     return _items.firstWhere((product) => product.id == id);
   }
 
-  Future<void> fetchAndGetProducts() async {
+  Future<void> fetchAndGetProducts([bool filterByUserID = false]) async {
+    final filterString =
+        filterByUserID ? 'orderBy="creatorID"&equalTo="$userID"' : '';
     var url = Uri.parse(
-        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
+        'https://shopstop-21329-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken&$filterString');
     try {
       final response = await http.get(url);
       final List<Product> fetchedProducts = [];
@@ -99,7 +101,7 @@ class Products with ChangeNotifier {
           'description': product.description,
           'price': product.price,
           'imageURL': product.imageURL,
-          'isFavorite': product.isFavorite,
+          'creatorID': userID
         }),
       );
       final newProduct = Product(

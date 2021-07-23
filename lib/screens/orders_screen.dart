@@ -61,30 +61,30 @@ class _OrdersScreenState extends State<OrdersScreen> {
           ],
         ),
         drawer: AppDrawer(),
-        body: FutureBuilder(
-          future:
-              Provider.of<Orders>(context, listen: false).fetchAndSetOrders(),
-          builder: (ctx, dataSnapshot) {
-            if (dataSnapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else {
-              if (dataSnapshot.error != null) {
-                // ...
-                // Do error handling stuff
-                return Center(
-                  child: Text('An error occurred!'),
-                );
-              } else {
-                return ordersData.orders.length < 0
-                    ? Center(
-                        child: Text(
-                          'No Orders Yet!',
-                          style: Theme.of(context).textTheme.headline3.copyWith(
-                                color: Colors.black,
-                              ),
-                        ),
-                      )
-                    : Consumer<Orders>(
+        body: ordersData.orders.length <= 0
+            ? Center(
+                child: Text(
+                  'No Orders Yet!',
+                  style: Theme.of(context).textTheme.headline3.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+              )
+            : FutureBuilder(
+                future: Provider.of<Orders>(context, listen: false)
+                    .fetchAndSetOrders(),
+                builder: (ctx, dataSnapshot) {
+                  if (dataSnapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    if (dataSnapshot.error != null) {
+                      // ...
+                      // Do error handling stuff
+                      return Center(
+                        child: Text('An error occurred!'),
+                      );
+                    } else {
+                      return Consumer<Orders>(
                         builder: (ctx, orderData, child) => ListView.builder(
                           itemCount: ordersData.orders.length,
                           itemBuilder: (ctx, i) {
@@ -92,10 +92,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           },
                         ),
                       );
-              }
-            }
-          },
-        ),
+                    }
+                  }
+                },
+              ),
       ),
     );
   }

@@ -49,6 +49,7 @@ class _ProductItemState extends State<ProductItem> {
               child: Image.network(
                 product.imageURL,
                 fit: BoxFit.fill,
+                alignment: Alignment.topCenter,
               ),
               footer: Container(
                 height: 70,

@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/http_exception.dart';
 
@@ -9,7 +11,7 @@ class Auth with ChangeNotifier {
   String _token;
   DateTime _tokenExpiryDate;
   String _userID;
-
+  Timer _authTimer;
   bool get isAuth {
     return _token != null;
   }
@@ -50,7 +52,15 @@ class Auth with ChangeNotifier {
       _tokenExpiryDate = DateTime.now().add(
         Duration(seconds: int.parse(responseBody['expiresIn'])),
       );
+      _autoLogout();
       notifyListeners();
+      final prefs = await SharedPreferences.getInstance();
+      final userData = json.encode({
+        'token': _token,
+        'userID': _userID,
+        'expriryDate': _tokenExpiryDate.toIso8601String()
+      });
+      prefs.setString('userData', userData);
     } catch (error) {
       throw error;
     }
@@ -62,5 +72,44 @@ class Auth with ChangeNotifier {
 
   Future<void> userLogin(String email, password) async {
     return _authenticate(email, password, 'signInWithPassword');
+  }
+
+  Future<bool> tryAutoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userData')) {
+      return false;
+    }
+    final extractedUserData = json.decode(prefs.getString('userData'));
+    final expiryDate = DateTime.parse(extractedUserData['userData']);
+    if (expiryDate.isBefore(DateTime.now())) {
+      return false;
+    }
+    _token = extractedUserData['token'];
+    _userID = extractedUserData['userID'];
+    _tokenExpiryDate = expiryDate;
+    notifyListeners();
+    _autoLogout();
+    return true;
+  }
+
+  Future<void> logout() async {
+    _token = null;
+    _tokenExpiryDate = null;
+    _userID = null;
+    if (_authTimer != null) {
+      _authTimer.cancel();
+      _authTimer = null;
+    }
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+
+  void _autoLogout() {
+    if (_authTimer != null) {
+      _authTimer.cancel();
+    }
+    int timeToExpiry = _tokenExpiryDate.difference(DateTime.now()).inSeconds;
+    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   }
 }

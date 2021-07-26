@@ -46,10 +46,12 @@ class _ProductItemState extends State<ProductItem> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(18),
             child: GridTile(
-              child: Image.network(
-                product.imageURL,
-                fit: BoxFit.fill,
-                alignment: Alignment.topCenter,
+              child: Hero(tag: product.id, 
+                              child: FadeInImage(
+                  placeholder: AssetImage('lib/assets/images/black.png'),
+                  image: NetworkImage(product.imageURL),
+                  fit: BoxFit.cover,
+                ),
               ),
               footer: Container(
                 height: 70,

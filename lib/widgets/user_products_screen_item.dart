@@ -152,7 +152,7 @@ class _UserProductScreenItemState extends State<UserProductScreenItem> {
                         child: IconButton(
                             onPressed: () {
                               Navigator.pushNamed(
-                                  context, EdiUserProductsStateScreen.routeName,
+                                  context, EditUserProductsStateScreen.routeName,
                                   arguments: widget.id);
                             },
                             tooltip: 'Edit Item',

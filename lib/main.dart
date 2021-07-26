@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/custom_route.dart';
+
 import './screens/product_overview_screen.dart';
 import './screens/product_detail_screen.dart';
 import './screens/cart_screen.dart';
@@ -47,38 +49,45 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'MyShop',
           theme: ThemeData(
-              primarySwatch: Colors.grey,
-              accentColor: Colors.deepOrange,
-              primaryIconTheme: IconThemeData(color: Colors.amber),
-              canvasColor: Colors.grey.withAlpha(165),
-              dividerTheme: DividerThemeData(color: Colors.red, thickness: 1.5),
-              appBarTheme: AppBarTheme(
-                  backgroundColor: Colors.grey[900],
-                  titleTextStyle: Theme.of(context).textTheme.headline6),
-              textTheme: TextTheme(
-                headline6: TextStyle(color: Colors.deepOrange, fontSize: 24),
-                headline5: TextStyle(color: Colors.white),
-                headline4:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              ),
-              fontFamily: 'Lato'),
+            primarySwatch: Colors.grey,
+            accentColor: Colors.deepOrange,
+            primaryIconTheme: IconThemeData(color: Colors.amber),
+            canvasColor: Colors.grey.withAlpha(165),
+            dividerTheme: DividerThemeData(color: Colors.red, thickness: 1.5),
+            appBarTheme: AppBarTheme(
+                backgroundColor: Colors.grey[900],
+                titleTextStyle: Theme.of(context).textTheme.headline6),
+            textTheme: TextTheme(
+              headline6: TextStyle(color: Colors.deepOrange, fontSize: 24),
+              headline5: TextStyle(color: Colors.white),
+              headline4:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+            fontFamily: 'Lato',
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: CustomPageTransition(),
+                TargetPlatform.iOS: CustomPageTransition(),
+              },
+            ),
+          ),
           home: auth.isAuth
-              ? ProductOverviewScreen()
+              ? ProductsOverviewScreen()
               : FutureBuilder(
+                  future: auth.tryAutoLogin(),
                   builder: (ctx, authStatusSnapShot) =>
                       authStatusSnapShot.connectionState ==
                               ConnectionState.waiting
                           ? SplashScreen()
                           : AuthScreen(),
-                  future: auth.tryAutoLogin(),
                 ),
           routes: {
             ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
             CartScreen.routeName: (ctx) => CartScreen(),
             OrdersScreen.routeName: (ctx) => OrdersScreen(),
             UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
-            EdiUserProductsStateScreen.routeName: (ctx) =>
-                EdiUserProductsStateScreen(),
+            EditUserProductsStateScreen.routeName: (ctx) =>
+                EditUserProductsStateScreen(),
           },
         ),
       ),

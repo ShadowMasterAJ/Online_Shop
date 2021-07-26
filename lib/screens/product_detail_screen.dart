@@ -25,67 +25,78 @@ class ProductDetailScreen extends StatelessWidget {
         ],
       )),
       child: Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Colors.deepOrange, //change your color here
-          ),
-          backgroundColor: Colors.grey[900],
-          title: Text(
-            product.title,
-            style: Theme.of(context).textTheme.headline6,
-          ),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Center(
-                child: Container(
-                  constraints: BoxConstraints(
-                      maxHeight: 550,
-                      maxWidth: MediaQuery.of(context).size.width - 10),
-                  //     minHeight: 300,
-                  //     maxWidth: MediaQuery.of(context).size.width - 5),
-                  width: double.infinity,
+        // appBar: AppBar(
+        //   iconTheme: IconThemeData(
+        //     color: Colors.deepOrange, //change your color here
+        //   ),
+        //   backgroundColor: Colors.grey[900],
+        //   title: Text(
+        //     product.title,
+        //     style: Theme.of(context).textTheme.headline6,
+        //   ),
+        // ),
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 400,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Container(
+                  padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(18),
+                      color: Colors.grey[900]),
+                  child: Text(
+                    product.title,
+                    style: Theme.of(context).textTheme.headline6,
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(18),
-                    child: Image.network(
-                      product.imageURL,
-                      fit: BoxFit.cover,
-                    ),
+                ),
+                background: Hero(
+                  tag: product.id,
+                  child: Image.network(
+                    product.imageURL,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-              SizedBox(
-                height: 10,
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
+                  // Text(
+                  //   '${product.title}',
+                  //   style: Theme.of(context).textTheme.headline4,
+                  //   textAlign: TextAlign.center,
+                  // ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '${product.description}',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline4
+                        .copyWith(fontSize: 20, fontWeight: FontWeight.w300),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '\$${product.price}',
+                    style: Theme.of(context).textTheme.headline4,
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 900,
+                  )
+                ],
               ),
-              Text(
-                '${product.title}',
-                style: Theme.of(context).textTheme.headline4,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                '${product.description}',
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4
-                    .copyWith(fontSize: 20, fontWeight: FontWeight.w300),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                '\$${product.price}',
-                style: Theme.of(context).textTheme.headline4,
-              )
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

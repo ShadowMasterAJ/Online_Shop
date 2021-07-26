@@ -1,9 +1,11 @@
+import 'package:fashion_eshop/models/custom_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/orders_screen.dart';
 import '../screens/user_products_screen.dart';
 import '../providers/auth.dart';
+import '../models/custom_route.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -64,8 +66,13 @@ class AppDrawer extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context)
-                      .pushReplacementNamed(OrdersScreen.routeName);
+                  // Navigator.of(context)
+                  //     .pushReplacementNamed(OrdersScreen.routeName);
+                  Navigator.of(context).pushReplacement(
+                    CustomRoute(
+                      builder: (context) => OrdersScreen(),
+                    ),
+                  );
                 },
                 child: Card(
                   elevation: 15,
@@ -132,7 +139,7 @@ class AppDrawer extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pushReplacementNamed('/');
-                  Provider.of<Auth>(context).logout();
+                  Provider.of<Auth>(context, listen: false).logout();
                 },
                 child: Card(
                   elevation: 15,

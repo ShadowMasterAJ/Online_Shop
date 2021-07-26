@@ -4,15 +4,15 @@ import 'package:provider/provider.dart';
 import '../providers/product.dart';
 import '../providers/products.dart';
 
-class EdiUserProductsStateScreen extends StatefulWidget {
+class EditUserProductsStateScreen extends StatefulWidget {
   static const routeName = '/edit-products';
   @override
-  _EdiUserProductsStateScreenState createState() =>
-      _EdiUserProductsStateScreenState();
+  _EditUserProductsStateScreenState createState() =>
+      _EditUserProductsStateScreenState();
 }
 
-class _EdiUserProductsStateScreenState
-    extends State<EdiUserProductsStateScreen> {
+class _EditUserProductsStateScreenState
+    extends State<EditUserProductsStateScreen> {
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _imageURLFocusNode = FocusNode();

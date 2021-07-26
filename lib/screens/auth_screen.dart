@@ -106,26 +106,36 @@ class _AuthCardState extends State<AuthCard>
   var _isLoading = false;
   final _passwordController = TextEditingController();
   AnimationController _animationController;
-  Animation<Size> _heightAnimation;
-  @override
-  void dispose() {
-    super.dispose();
-    _animationController.dispose();
-  }
+  Animation<Offset> _slideAnimation;
+  Animation<double> _opacityTranstition;
 
   @override
   void initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    _heightAnimation = Tween<Size>(
-      begin: Size(double.infinity, 270),
-      end: Size(double.infinity, 330),
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 900),
+      reverseDuration: Duration(milliseconds: 800),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, -.2),
+      end: Offset(0, 0),
     ).animate(CurvedAnimation(
-        parent: _animationController, curve: Curves.linearToEaseOut));
+      parent: _animationController,
+      curve: Curves.linearToEaseOut,
+    ));
+
+    _opacityTranstition = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.linearToEaseOut,
+    ));
   }
 
-  void _showErrorDialog(String errorMessage) {
+  void _showErrorDialog(String errorMessage, BuildContext context) {
     showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -151,12 +161,19 @@ class _AuthCardState extends State<AuthCard>
             ));
   }
 
+  // void dispose() {
+  //   super.dispose();
+  //   _animationController.dispose();
+  // }
+
   Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
       return;
     }
     _formKey.currentState.save();
+    if (!mounted) return;
+
     setState(() {
       _isLoading = true;
     });
@@ -189,12 +206,14 @@ class _AuthCardState extends State<AuthCard>
       } else if (error.toString().contains('INVALID_PASSWORD')) {
         errorMessage = 'The password is invalid!';
       }
-      _showErrorDialog(errorMessage);
+      _showErrorDialog(errorMessage, context);
     } catch (error) {
       const errorMessage =
           'Could not authenticate you\nPlease try again later!';
-      _showErrorDialog(errorMessage);
+      _showErrorDialog(errorMessage, context);
     }
+    if (!mounted) return;
+
     setState(() {
       _isLoading = false;
     });
@@ -223,11 +242,11 @@ class _AuthCardState extends State<AuthCard>
       ),
       elevation: 8.0,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 750),
+        duration: Duration(milliseconds: 700),
         curve: Curves.linearToEaseOut,
-        height: _authMode == AuthMode.Signup ? 330 : 270,
+        height: _authMode == AuthMode.Signup ? 270 : 240,
         constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 330 : 270),
+            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 295 : 240),
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(20.0),
         child: Form(
@@ -264,63 +283,79 @@ class _AuthCardState extends State<AuthCard>
                     _authData['password'] = value;
                   },
                 ),
-                if (_authMode == AuthMode.Signup)
-                  TextFormField(
-                    enabled: _authMode == AuthMode.Signup,
-                    decoration: InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    validator: _authMode == AuthMode.Signup
-                        ? (value) {
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match!';
-                            }
-                            return null;
-                          }
-                        : null,
+                AnimatedContainer(
+                  duration: Duration(milliseconds: 700),
+                  curve: Curves.linearToEaseOut,
+                  constraints: BoxConstraints(
+                      minHeight: _authMode == AuthMode.Signup ? 40 : 0,
+                      maxHeight: _authMode == AuthMode.Signup ? 80 : 0),
+                  child: FadeTransition(
+                    opacity: _opacityTranstition,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: TextFormField(
+                        enabled: _authMode == AuthMode.Signup,
+                        decoration:
+                            InputDecoration(labelText: 'Confirm Password'),
+                        obscureText: true,
+                        validator: _authMode == AuthMode.Signup
+                            ? (value) {
+                                if (value != _passwordController.text) {
+                                  return 'Passwords do not match!';
+                                }
+                                return null;
+                              }
+                            : null,
+                      ),
+                    ),
                   ),
+                ),
                 SizedBox(
                   height: 20,
                 ),
                 if (_isLoading)
                   CircularProgressIndicator()
                 else
-                  ElevatedButton(
-                    child: Text(
-                      _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',
-                      style: TextStyle(
-                        color: Theme.of(context).accentColor,
-                        fontSize: 20,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        child: Text(
+                          _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',
+                          style: TextStyle(
+                            color: Theme.of(context).accentColor,
+                            fontSize: 20,
+                          ),
+                        ),
+                        onPressed: _submit,
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 25.0, vertical: 10.0),
+                          primary: Theme.of(context).primaryColorDark,
+                        ),
                       ),
-                    ),
-                    onPressed: _submit,
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 30.0, vertical: 10.0),
-                      primary: Theme.of(context).primaryColorDark,
-                    ),
+                      TextButton(
+                          child: Text(
+                            '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'}\n INSTEAD',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              // color: Theme.of(context).accentColor,
+                              fontSize: 20,
+                            ),
+                          ),
+                          onPressed: _switchAuthMode,
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20.0, vertical: 4),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            textStyle: TextStyle(
+                                color: Theme.of(context).primaryColorDark),
+                          )),
+                    ],
                   ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextButton(
-                    child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD',
-                      style: TextStyle(
-                        // color: Theme.of(context).accentColor,
-                        fontSize: 20,
-                      ),
-                    ),
-                    onPressed: _switchAuthMode,
-                    style: TextButton.styleFrom(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      textStyle:
-                          TextStyle(color: Theme.of(context).primaryColor),
-                    )),
               ],
             ),
           ),

@@ -18,8 +18,6 @@ class UserProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productsData = Provider.of<Products>(context);
-
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -55,7 +53,7 @@ class UserProductsScreen extends StatelessWidget {
               IconButton(
                 onPressed: () {
                   Navigator.of(context)
-                      .pushNamed(EdiUserProductsStateScreen.routeName);
+                      .pushNamed(EditUserProductsStateScreen.routeName);
                 },
                 icon: Icon(
                   Icons.add,
@@ -70,7 +68,7 @@ class UserProductsScreen extends StatelessWidget {
             future: _refreshProdData(context),
             builder: (ctx, snapShot) => snapShot.connectionState ==
                     ConnectionState.waiting
-                ? CircularProgressIndicator()
+                ? Center(child: CircularProgressIndicator())
                 : RefreshIndicator(
                     backgroundColor: Colors.black,
                     color: Theme.of(context).accentColor,
@@ -86,29 +84,21 @@ class UserProductsScreen extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: ListView.builder(
-                                      itemCount: productsData.items.length,
-                                      itemBuilder: (_, i) => Column(
-                                            children: [
-                                              UserProductScreenItem(
-                                                id: productsData.items[i].id,
-                                                price:
-                                                    productsData.items[i].price,
-                                                description: productsData
-                                                    .items[i].description,
-                                                imageURL: productsData
-                                                    .items[i].imageURL,
-                                                title:
-                                                    productsData.items[i].title,
-                                              ),
-                                              // Container(
-                                              //   margin: EdgeInsets.symmetric(
-                                              //       horizontal: 10, vertical: 7),
-                                              //   child: Divider(
-                                              //     color: Colors.black,
-                                              //   ),
-                                              // )
-                                            ],
-                                          )),
+                                    itemCount: productsData.items.length,
+                                    itemBuilder: (_, i) => Column(
+                                      children: [
+                                        UserProductScreenItem(
+                                          id: productsData.items[i].id,
+                                          price: productsData.items[i].price,
+                                          description:
+                                              productsData.items[i].description,
+                                          imageURL:
+                                              productsData.items[i].imageURL,
+                                          title: productsData.items[i].title,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             )

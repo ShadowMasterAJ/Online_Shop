@@ -9,16 +9,17 @@ import '../models/http_exception.dart';
 
 class Auth with ChangeNotifier {
   String _token;
-  DateTime _tokenExpiryDate;
+  DateTime _expiryDate;
   String _userID;
   Timer _authTimer;
+
   bool get isAuth {
-    return _token != null;
+    return token != null;
   }
 
   String get token {
-    if (_tokenExpiryDate != null &&
-        _tokenExpiryDate.isAfter(DateTime.now()) &&
+    if (_expiryDate != null &&
+        _expiryDate.isAfter(DateTime.now()) &&
         _token != null) {
       return _token;
     }
@@ -49,18 +50,20 @@ class Auth with ChangeNotifier {
       }
       _token = responseBody['idToken'];
       _userID = responseBody['localId'];
-      _tokenExpiryDate = DateTime.now().add(
+      _expiryDate = DateTime.now().add(
         Duration(seconds: int.parse(responseBody['expiresIn'])),
       );
       _autoLogout();
       notifyListeners();
+
       final prefs = await SharedPreferences.getInstance();
       final userData = json.encode({
         'token': _token,
         'userID': _userID,
-        'expriryDate': _tokenExpiryDate.toIso8601String()
+        'expriryDate': _expiryDate.toIso8601String()
       });
       prefs.setString('userData', userData);
+      
     } catch (error) {
       throw error;
     }
@@ -79,14 +82,15 @@ class Auth with ChangeNotifier {
     if (!prefs.containsKey('userData')) {
       return false;
     }
-    final extractedUserData = json.decode(prefs.getString('userData'));
-    final expiryDate = DateTime.parse(extractedUserData['userData']);
+    final extractedUserData =
+        json.decode(prefs.getString('userData')) as Map<String, dynamic>;
+    final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
     if (expiryDate.isBefore(DateTime.now())) {
       return false;
     }
     _token = extractedUserData['token'];
     _userID = extractedUserData['userID'];
-    _tokenExpiryDate = expiryDate;
+    _expiryDate = expiryDate;
     notifyListeners();
     _autoLogout();
     return true;
@@ -94,7 +98,7 @@ class Auth with ChangeNotifier {
 
   Future<void> logout() async {
     _token = null;
-    _tokenExpiryDate = null;
+    _expiryDate = null;
     _userID = null;
     if (_authTimer != null) {
       _authTimer.cancel();
@@ -109,7 +113,7 @@ class Auth with ChangeNotifier {
     if (_authTimer != null) {
       _authTimer.cancel();
     }
-    int timeToExpiry = _tokenExpiryDate.difference(DateTime.now()).inSeconds;
+    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
     _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   }
 }

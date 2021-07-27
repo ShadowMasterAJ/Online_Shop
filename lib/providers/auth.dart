@@ -30,7 +30,7 @@ class Auth with ChangeNotifier {
     return _userID;
   }
 
-  Future<void> _authenticate(String email, password, urlSegment) async {
+  Future<void> _authenticate(String email, String password, urlSegment) async {
     final url = Uri.parse(
         'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyAgq-Ls6VKGfAO4UiO6w85tZCYQWVDFHrw');
     try {
@@ -60,20 +60,19 @@ class Auth with ChangeNotifier {
       final userData = json.encode({
         'token': _token,
         'userID': _userID,
-        'expriryDate': _expiryDate.toIso8601String()
+        'expiryDate': _expiryDate.toIso8601String()
       });
       prefs.setString('userData', userData);
-      
     } catch (error) {
       throw error;
     }
   }
 
-  Future<void> userSignUp(String email, password) async {
+  Future<void> userSignUp(String email, String password) async {
     return _authenticate(email, password, 'signUp');
   }
 
-  Future<void> userLogin(String email, password) async {
+  Future<void> userLogin(String email, String password) async {
     return _authenticate(email, password, 'signInWithPassword');
   }
 
@@ -84,7 +83,13 @@ class Auth with ChangeNotifier {
     }
     final extractedUserData =
         json.decode(prefs.getString('userData')) as Map<String, dynamic>;
-    final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
+
+    final expiryDate = extractedUserData['expiryDate'] == null
+        ? null
+        : DateTime.parse(extractedUserData['expiryDate']);
+    if (expiryDate == null) {
+      return false;
+    }
     if (expiryDate.isBefore(DateTime.now())) {
       return false;
     }

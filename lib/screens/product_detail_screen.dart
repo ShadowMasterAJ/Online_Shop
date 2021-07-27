@@ -41,15 +41,11 @@ class ProductDetailScreen extends StatelessWidget {
               expandedHeight: 400,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
-                title: Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(18),
-                      color: Colors.grey[900]),
-                  child: Text(
-                    product.title,
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
+                centerTitle: true,
+                title: Text(
+                  product.title,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline6,
                 ),
                 background: Hero(
                   tag: product.id,
